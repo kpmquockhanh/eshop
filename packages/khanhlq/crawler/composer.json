@@ -1,0 +1,19 @@
+{
+    "name": "khanhlq/crawler",
+    "description": "crawler",
+    "authors": [
+        {
+            "name": "khanhlq",
+            "email": "kpmquockhanh@gmail.com"
+        }
+    ],
+  "autoload": {
+    "psr-4": {
+      "Khanhlq\\Crawler\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+    "require": {
+        "symfony/dom-crawler": "^4.3@dev"
+    }
+}
