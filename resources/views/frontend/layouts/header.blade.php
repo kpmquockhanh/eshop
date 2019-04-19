@@ -81,7 +81,9 @@
                     {{--</div>--}}
                 {{--</div>--}}
                 <!-- ============================================================= SHOPPING CART DROPDOWN ============================================================= -->
-                @include('frontend.layouts.cart', ['carts' => $carts])
+
+                @include('frontend.layouts.cart')
+
             </div><!-- /.top-cart-row-container -->
             <!-- ============================================================= SHOPPING CART DROPDOWN : END ============================================================= -->
         </div><!-- /.top-cart-row -->
@@ -99,17 +101,16 @@
                         <span class="icon-bar"></span>
                     </button>
                 </div><!-- /.navbar-header -->
-                <div class="collapse navbar-collapse" id="mc-horizontal-menu-collapse">
+                <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="">
-                            <a href="#" class="dropdown-toggle" data-hover="dropdown" data-toggle="dropdown">TV &amp; Audio</a>
-                        </li>
-                        <li class="">
-                            <a href="#" class="dropdown-toggle" data-hover="dropdown" data-toggle="dropdown">TV &amp; Audio</a>
-                        </li>
-                        <li class="">
-                            <a href="#" class="dropdown-toggle" data-hover="dropdown" data-toggle="dropdown">TV &amp; Audio</a>
-                        </li>
+                        @foreach (\App\Category::query()->where('show_home', 1)->orderByDesc('order')->limit(6)->get() as $category)
+                            <li class="">
+                                <a href="{{ route('shop', ['cate' => $category->id]) }}">{{ $category->cate_name }}</a>
+                            </li>
+                        @endforeach
+                            <li class="">
+                                <a href="{{ route('shop') }}">All categories</a>
+                            </li>
                     </ul><!-- /.navbar-nav -->
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.navbar -->

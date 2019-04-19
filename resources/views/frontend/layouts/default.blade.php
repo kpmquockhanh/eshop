@@ -10,13 +10,13 @@
 
     @include('frontend.layouts.header')
 
-    @include('frontend.layouts.carousel')
+    @yield('content')
 
 
     {{--    @include('frontend.layouts.product-tab')--}}
     {{--    @include('frontend.layouts.best-seller', ['products' => $products])--}}
 
-    @include('frontend.layouts.recently-viewed', ['products' => $products])
+{{--    @include('frontend.layouts.recently-viewed', ['products' => $products])--}}
 
     {{--    @include('frontend.layouts.brands')--}}
     @include('frontend.layouts.footer')

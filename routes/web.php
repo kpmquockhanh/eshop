@@ -34,9 +34,9 @@ Route::middleware('locale')->group(function () {
         Route::post('/update', 'CartController@updateCart')->name('cart.update');
         Route::get('/checkout', 'CartController@checkoutCart')->name('cart.checkout');
         Route::post('/add-order', 'OrderController@store')->name('cart.checkout.add');
-        Route::post('/add-cart', 'CartController@addToCart');
-        Route::post('/remove-cart', 'CartController@removeFromCart');
-        Route::get('/remove-all-cart', 'CartController@clearAllCart');
+        Route::get('/add-cart', 'CartController@addToCart')->name('cart.add');
+        Route::get('/remove-cart', 'CartController@removeFromCart')->name('cart.delete');
+        Route::get('/remove-all-cart', 'CartController@clearAllCart')->name('cart.delete.all');
     });
 
 

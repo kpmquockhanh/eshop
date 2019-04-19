@@ -41,8 +41,6 @@ class HomeController extends Controller
 
     public function viewShop(Request $request)
     {
-
-
         $products = Product::query()->where('show',true);
 
         if ($cate_id = $request->cate)
@@ -70,11 +68,11 @@ class HomeController extends Controller
             $products->currentPage() * $products->perPage():
             $products->count()?($products->currentPage()-1)*$products->perPage()+$products->count():0;
         $viewData = [
-            'Products' => $products,
+            'products' => $products,
             'toItem' => $toItem,
             'fromItem' => $toItem?$toItem-$products->count()+1:0,
             'queries' => $request->query(),
-            'categories' => Category::query()->get(),
+            'categories' => Category::with('products')->get(),
             'hotProducts' => Product::query()->orderByDesc('views')->take(3)->get(),
         ];
         if (Auth::check())

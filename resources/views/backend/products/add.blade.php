@@ -124,7 +124,7 @@
                                 <label class="col-sm-2 col-form-label"></label>
                                 <div class="col-sm-10">
                                     <div class="form-group float-right">
-                                        <button type="submit" class="btn btn-success">Thêm hoa</button>
+                                        <button type="submit" class="btn btn-success">Thêm sản phẩm</button>
                                     </div>
                                 </div>
                             </div>

@@ -18,6 +18,7 @@ class CreateCategoriesTable extends Migration
             $table->string('cate_name');
             $table->string('cate_code');
             $table->integer('show_home')->default(0);
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }

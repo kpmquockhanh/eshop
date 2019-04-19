@@ -33,7 +33,7 @@ class CartController extends Controller
 
     public static function getCart()
     {
-        return Cart::query()->with('Product')->where('user_id', Auth::guard('user')->id())->get();
+        return Cart::query()->with('product')->where('user_id', Auth::guard('user')->id())->get();
     }
 
 
@@ -41,12 +41,7 @@ class CartController extends Controller
     {
         if ($id = $request->id)
         {
-            if (!Product::find($id))
-                return response()->json([
-                    'status' => false,
-                ]);
-
-
+            Product::query()->findOrFail($id);
             $cart = Cart::query()
                 ->where('user_id', Auth::guard('user')->id())
                 ->where('product_id', $id)
@@ -62,36 +57,16 @@ class CartController extends Controller
                     'quantity' => $request->quantity?:1,
                 ]);
             }
-
-            return response()->json([
-                'status' => true,
-                'data' => view('frontend.cart.cart')->with(['carts' => $this->getCart()])->render(),
-            ]);
-        }else
-            return response()->json([
-                'status' => false,
-            ]);
-
+        }
+        return redirect(route('cart.index'));
     }
 
     public function removeFromCart(Request $request)
     {
-        if ($id = $request->id)
-        {
-            if (Cart::destroy($id))
-                return response()->json([
-                    'status' => true,
-                    'data' => view('frontend.cart.cart')->with(['carts' => $this->getCart()])->render(),
-                ]);
-            else
-                return response()->json([
-                    'status' => true,
-                ]);
-
-        }else
-            return response()->json([
-                'status' => false,
-            ]);
+        if ($id = $request->id) {
+            Cart::destroy($id);
+        }
+        return redirect(route('cart.index'));
     }
 
     public static function cleartAll()
