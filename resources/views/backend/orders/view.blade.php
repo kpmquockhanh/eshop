@@ -30,7 +30,7 @@
                                     <div class="d-flex align-items-center">
                                         <div class="form-group m-0">
                                             <strong class="text-primary p-2 bg-light">
-                                                {{ $order->user->name }} ({{$order->address_delivery->phone}})
+                                                {{ $order->user->name }} {{$order->address_delivery ? $order->address_delivery->phone : ''}}
                                             </strong>
                                         </div>
                                     </div>

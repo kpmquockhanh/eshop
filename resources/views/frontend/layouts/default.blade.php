@@ -23,5 +23,6 @@
 </div><!-- /.wrapper -->
 
 @include('frontend.layouts.script')
+@yield('script')
 </body>
 </html>

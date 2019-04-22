@@ -9,7 +9,7 @@
                     <div class="row no-margin cart-item">
                         <div class="col-xs-12 col-sm-2 no-margin">
                             <a href="#" class="thumb-holder">
-                                <img class="lazy" alt="" src="http://placehold.it/73x73">
+                                <img class="lazy" alt="" src="{{ asset('images/'.$cart->product->image) }}">
                             </a>
                         </div>
 
@@ -23,11 +23,9 @@
                         <div class="col-xs-12 col-sm-3 no-margin">
                             <div class="quantity">
                                 <div class="le-quantity">
-                                    <form>
-                                        <a class="minus" href="#reduce"></a>
-                                        <input name="quantity" readonly="readonly" type="text" value="{{ $cart->quantity }}">
-                                        <a class="plus" href="#add"></a>
-                                    </form>
+                                    <a class="minus" href="{{ route('cart.minus.quantity', ['id' => $cart->id]) }}" data-id="{{ $cart->id }}"></a>
+                                    <input name="quantity" readonly="readonly" type="text" value="{{ $cart->quantity }}">
+                                    <a class="plus" href="{{ route('cart.add.quantity', ['id' => $cart->id]) }}" data-id="{{ $cart->id }}"></a>
                                 </div>
                             </div>
                         </div>
@@ -66,26 +64,39 @@
                             </li>
                         </ul>
                         <div class="buttons-holder">
-                            <a class="le-button big" href="checkout.html">checkout</a>
-                            <a class="simple-link block" href="category-grid.html">continue shopping</a>
+                            <a class="le-button big" href="{{ route('cart.checkout') }}">checkout</a>
+                            <a class="simple-link block" href="{{ route('shop') }}">continue shopping</a>
                         </div>
                     </div>
                 </div><!-- /.widget -->
 
-                <div id="cupon-widget" class="widget">
-                    <h1 class="border">use coupon</h1>
-                    <div class="body">
-                        <form>
-                            <div class="inline-input">
-                                <input data-placeholder="enter coupon code" type="text" class="placeholder">
-                                <button class="le-button" type="submit">Apply</button>
-                            </div>
-                        </form>
-                    </div>
-                </div><!-- /.widget -->
+                {{--<div id="cupon-widget" class="widget">--}}
+                    {{--<h1 class="border">use coupon</h1>--}}
+                    {{--<div class="body">--}}
+                        {{--<form>--}}
+                            {{--<div class="inline-input">--}}
+                                {{--<input data-placeholder="enter coupon code" type="text" class="placeholder">--}}
+                                {{--<button class="le-button" type="submit">Apply</button>--}}
+                            {{--</div>--}}
+                        {{--</form>--}}
+                    {{--</div>--}}
+                {{--</div><!-- /.widget -->--}}
             </div><!-- /.sidebar -->
 
             <!-- ========================================= SIDEBAR : END ========================================= -->
         </div>
     </section>
+@stop
+@section('script')
+    <script>
+        $('.le-quantity .minus').click((e) => {
+            // console.log($(e.target).attr('href'))
+            const id = $(e.target).attr('href');
+            window.location = id;
+        })
+        $('.le-quantity .plus').click(() => {
+            const id = $(e.target).attr('href');
+            window.location = id;
+        })
+    </script>
 @stop

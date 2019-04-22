@@ -92,8 +92,7 @@ class CartController extends Controller
 
     public function checkoutCart()
     {
-        $viewData = [
-        ];
+        $viewData = [];
         $carts = $this->getCart();
         if (Auth::check())
             $viewData = array_merge($viewData, [
@@ -103,7 +102,7 @@ class CartController extends Controller
                 'subtotal' => $carts->sum(function ($item){
                     return $item->Product->sale_price*$item->quantity;
                 })]);
-        return view('frontend.checkout.checkout')->with($viewData);
+        return view('frontend.checkout')->with($viewData);
     }
 
     public function checkOrder()
@@ -125,5 +124,27 @@ class CartController extends Controller
             Cart::query()->where('id', $id)->update(['quantity' => $request->quantities[$key]]);
         }
         return redirect()->back();
+    }
+
+    public function add(Request $request)
+    {
+        if ($request->id) {
+            Cart::query()->where('id', $request->id)->increment('quantity');
+        }
+        return redirect()->intended(route('cart.index'));
+    }
+
+    public function minus(Request $request)
+    {
+        if ($request->id) {
+            $cartItem = Cart::query()->findOrFail($request->id);
+
+            if ($cartItem->quantity == 1) {
+                Cart::destroy($request->id);
+            } else {
+                Cart::query()->where('id', $request->id)->decrement('quantity');
+            }
+        }
+        return redirect()->intended(route('cart.index'));
     }
 }

@@ -101,7 +101,7 @@ class OrderController extends Controller
 //        dd($order->Products);
         $viewData = [
             'order' => $order,
-            'Products' => $order->Products
+            'products' => $order->products
         ];
 
         return view('backend.orders.view')->with($viewData);

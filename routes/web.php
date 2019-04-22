@@ -24,7 +24,7 @@ Route::middleware('locale')->group(function () {
     Auth::routes();
     $this->get('logout', 'Auth\LoginController@logout')->name('logout');
     Route::prefix('product')->group(function () {
-        Route::get('/', 'HomeController@detailFlower')->name('product.index');
+        Route::get('/', 'HomeController@detailProduct')->name('product.index');
         Route::post('/quick-view', 'HomeController@viewQuick')->name('product.quick-view');
     });
     Route::get('/check-order', 'CartController@checkOrder')->name('check-order');
@@ -35,6 +35,8 @@ Route::middleware('locale')->group(function () {
         Route::get('/checkout', 'CartController@checkoutCart')->name('cart.checkout');
         Route::post('/add-order', 'OrderController@store')->name('cart.checkout.add');
         Route::get('/add-cart', 'CartController@addToCart')->name('cart.add');
+        Route::get('/add/', 'CartController@add')->name('cart.add.quantity');
+        Route::get('/minus/', 'CartController@minus')->name('cart.minus.quantity');
         Route::get('/remove-cart', 'CartController@removeFromCart')->name('cart.delete');
         Route::get('/remove-all-cart', 'CartController@clearAllCart')->name('cart.delete.all');
     });

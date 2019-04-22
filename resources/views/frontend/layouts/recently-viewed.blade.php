@@ -21,16 +21,16 @@
                             </div>
                             <div class="body">
                                 <div class="title">
-                                    <a href="single-product.html">{{ $product->name }}</a>
+                                    <a href="{{ route('product.index', ['id' => $product->id]) }}">{{ $product->name }}</a>
                                 </div>
-                                <div class="brand">{{ $product->categories->first() ? $product->categories->first() : '' }}</div>
+                                <div class="brand">{{ $product->categories->first() ? $product->categories->first()->cate_name : '' }}</div>
                             </div>
                             <div class="prices">
                                 <div class="price-current text-right">{{ $product->price_formated }}</div>
                             </div>
                             <div class="hover-area">
                                 <div class="add-cart-button">
-                                    <a href="single-product.html" class="le-button">Add to Cart</a>
+                                    <a href="{{ route('cart.add', ['id' => $product->id]) }}" class="le-button">Add to Cart</a>
                                 </div>
                                 {{--<div class="wish-compare">--}}
                                     {{--<a class="btn-add-to-wishlist" href="#">Add to Wishlist</a>--}}

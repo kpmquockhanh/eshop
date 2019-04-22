@@ -96,7 +96,7 @@ class HomeController extends Controller
             $product = Product::with('categories')->findOrFail($id);
             $id_related = (array_column($product->categories->toArray(), 'category_id'));
             $viewData = [
-                'Product' => Product::query()->findOrFail($request->id),
+                'product' => Product::query()->findOrFail($request->id),
                 'relatedProducts' => Product::whereHas('categories', function ($q) use($id_related, $product){
                     $q->whereIn('category_id', $id_related);
                 })->where('id', '<>', $id)->take(5)->get(),
