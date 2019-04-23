@@ -62,7 +62,7 @@ class HomeController extends Controller
             $products->where('name','like', '%'.$request->s.'%')
                     ->orWhere('message', 'like', '%'.$request->s.'%');
         }
-        $products = $products->orderByDesc('id')->paginate(12);
+        $products = $products->orderByDesc('id')->paginate(1);
 
         $toItem = $products->perPage() == $products->count() ?
             $products->currentPage() * $products->perPage():

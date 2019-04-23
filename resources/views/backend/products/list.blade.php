@@ -102,9 +102,9 @@
                                             <p class="m-0">Giá: <strong>{{number_format($product->price)}}đ</strong></p>
                                             <p class="m-0">Số lượng: <strong>{{$product->quantity}}</strong></p>
                                             <p class="m-0">Thể loại:
-                                                @foreach ($product->categories->load('category') as $key => $category)
+                                                @foreach ($product->categories as $key => $category)
                                                     @if ($key),@endif
-                                                    <strong>{{($category->category->cate_name)}}</strong>
+                                                    <strong>{{($category->cate_name)}}</strong>
                                                 @endforeach
                                             </p>
                                             <p class="m-0">Giảm giá: <strong>{{$product->sale}} </strong></p>

@@ -23,7 +23,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
 
-        $products = Product::with('admin');
+        $products = Product::with('admin', 'categories');
 
         if (Auth::guard('admin')->user()->type != 3 )
             $products->where('admin_id', Auth::guard('admin')->id());

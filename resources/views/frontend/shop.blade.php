@@ -116,27 +116,7 @@
                                     </div><!-- /.row -->
                                 </div><!-- /.product-grid-holder -->
 
-                                <div class="pagination-holder">
-                                    <div class="row">
-
-                                        <div class="col-xs-12 col-sm-6 text-left">
-                                            <ul class="pagination ">
-                                                <li class="current"><a  href="#">1</a></li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#">4</a></li>
-                                                <li><a href="#">next</a></li>
-                                            </ul>
-                                        </div>
-
-                                        <div class="col-xs-12 col-sm-6">
-                                            <div class="result-counter">
-                                                Showing <span>1-9</span> of <span>11</span> results
-                                            </div>
-                                        </div>
-
-                                    </div><!-- /.row -->
-                                </div><!-- /.pagination-holder -->
+                                {{ $products->links('frontend.layouts.pagination') }}
                             </div><!-- /.products-grid #grid-view -->
 
                             <div id="list-view" class="products-grid fade tab-pane ">
