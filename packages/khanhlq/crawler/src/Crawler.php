@@ -10,7 +10,9 @@ namespace Khanhlq\Crawler;
 
 use App\Category;
 use App\CategoryFlower;
+use App\CategoryProduct;
 use App\Flower;
+use App\Product;
 use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -27,15 +29,12 @@ class Crawler
     {
         $this->page = new Page();
         $this->baseUrls = [
-            'https://hoayeuthuong.com/dien-hoa.aspx',
-            'https://hoayeuthuong.com/cua-hang-hoa.aspx',
-            'https://hoayeuthuong.com/hoa-tuoi.aspx',
+            'https://www.dienmaythienhoa.vn/'
         ];
     }
 
     public function getListCate(array $baseUrls)
     {
-
         $categories = Category::query()->get();
         $linkUrls = [];
 
@@ -45,7 +44,7 @@ class Crawler
                 break;
             }
             //get link list category
-            $links = $this->getListBySelector($page, 'div.r_nav ul li a');
+            $links = $this->getListBySelector($page, '.list-main-menu .item a');
 //            dd($links);
             foreach ($links as $link) {
                 $slug = str_slug(trim($link->text()));
@@ -54,7 +53,7 @@ class Crawler
                 if ($category) {
                     $linkUrls[] = [
                         'link' => $this->getFullPath($link->attribute('href')),
-                        'count' => CategoryFlower::with('flower')->where('category_id', $category->id)->count(),
+                        'count' => CategoryProduct::with('flower')->where('category_id', $category->id)->count(),
                         'name' => $category->cate_name,
                     ];
                 } else {
@@ -91,60 +90,25 @@ class Crawler
         $baseUrl = ($itemLink['link']);
 
         $page = $this->getPage($baseUrl);
-        try {
-            $dom = $page->find('#ctl00_cphContent_hdfGroupId');
-        } catch (\Exception $e) {
-            $dom = $page->find('#ctl00_cphContent_hdfKeyword');
-        }
-        $cateId = $dom->attribute('value');
 
-
-        if (is_numeric($cateId)) {
-            $url = 'https://hoayeuthuong.com/ajax/ProGroupHandler.ashx';
-        } else {
-            $url = 'https://hoayeuthuong.com/ajax/ProKeywordHandler.ashx';
-        }
-
-        foreach ($this->getListBySelector($page, '.items .item .i a') as $product) {
-            $data = $this->getData($product->attribute('href'));
-            if (!isset($data['price'])) {
-                continue;
-            }
-            if ($data['price'] == 0) {
-                continue;
-            }
-
-            if (!$this->createFlower($data)) {
-                continue;
-            }
-        }
-
-        $pIndex = 1;
-
+        $next = null;
         do {
-            $crawlData = (
-            json_decode(
-                $this->requestGetFlower(
-                    $url,
-                    '{"catId":"' . $cateId . '","pIndex":' . $pIndex++ . ',"orderQuery":"","lang":"vn"}'
-                )
-            )
-            );
-
-            foreach ($crawlData->dataItem as $item) {
-                //Detail
-
-                $data = ($this->getData($item->LinkItem));
-
-                if (!isset($data['price'])) {
-                    $data['price'] = 0;
+            if ($next) {
+                $page = $this->getPage($next->attribute('href'));
+            }
+            foreach ($this->getListBySelector($page, '.list-product-horical li.item-product .content > a') as $product) {
+                $data = $this->getData($product->attribute('href'));
+                $data['category'] = $page->find('.breadcrumb .breadcrumb-item a')->text();
+                if (!isset($data['price']) || $data['price'] == 0) {
+                    continue;
                 }
 
-                if (!$this->createFlower($data)) {
+                if (!$this->createProduct($data)) {
                     continue;
                 }
             }
-        } while ($crawlData->dataItem);
+            $next = $page->find('.page.pagination .right .text a');
+        } while ($next);
 
         return [
             'status' => true,
@@ -152,13 +116,13 @@ class Crawler
         ];
     }
 
-    public function createFlower($data)
+    public function createProduct($data)
     {
         try {
-            if (!$product = Flower::query()->where('slug', str_slug($data['name']))->first()) {
+            if (!$product = Product::query()->where('slug', str_slug($data['name']))->first()) {
                 $this->downloadImage($data['img_link'], $data['image']);
 //                dd($data);
-                $product = Flower::query()->create($data);
+                $product = Product::query()->create($data);
             }
 
             if (!$cate = Category::query()->where('cate_code', str_slug($data['category']))->first()) {
@@ -168,8 +132,8 @@ class Crawler
                 ]);
             }
 
-            if (!CategoryFlower::query()->where('product_id', $product->id)->where('category_id', $cate->id)->first()) {
-                CategoryFlower::query()->create([
+            if (!CategoryProduct::query()->where('product_id', $product->id)->where('category_id', $cate->id)->first()) {
+                CategoryProduct::query()->create([
                     'product_id' => $product->id,
                     'category_id' => $cate->id,
                 ]);
@@ -189,7 +153,7 @@ class Crawler
         if ($catetogory) {
             return [
                 'link' => $link,
-                'count' => CategoryFlower::with('flower')->where('category_id', $catetogory->id)->count(),
+                'count' => CategoryProduct::with('flower')->where('category_id', $catetogory->id)->count(),
                 'name' => $catetogory->cate_name,
             ];
         } else {
@@ -211,7 +175,7 @@ class Crawler
                 return $matches[0] . ($url[0] == '/' ? substr($url, 1) : $url);
             }
         }
-        return null;
+        return $url;
     }
 
     public function isUrl($string)
@@ -243,47 +207,41 @@ class Crawler
     public function getData($link)
     {
         $fullPath = $this->getFullPath($link);
-//        dump($fullPath);
         $content = $this->getPage($fullPath);
 
-        $data['link'] = $fullPath;
-
-        $regex = '/(\d+\.?)+/';
-        try {
-            $domNew = $content->find('.l_item .b_item .single .new span');
-            if (preg_match($regex, $domNew->text(), $matches)) {
-                $data['sale_price'] = str_replace('.', '', $matches[0]);
-            }
-        } catch (\Exception $e) {
-        }
-        try {
-            $domOld = $content->find('.l_item .b_item .single .old');
-            if (preg_match($regex, $domOld->text(), $matches)) {
-                $data['price'] = str_replace('.', '', $matches[0]);
-            }
-        } catch (\Exception $e) {
+        if (!$content) {
             return [];
         }
 
-        $data['saleoff'] = 0;
-        if (isset($data['sale_price']) && isset($data['price'])) {
-            if ($data['sale_price'] != 0 && $data['price'] != 0) {
-                $data['saleoff'] = round(1 - ($data['sale_price'] / $data['price']), 2);
-            }
+        $data['link'] = $fullPath;
+        try {
+            $domOld = $content->find('.price')->text();
+            $data['price'] = str_replace('đ', '', $domOld);
+            $data['price'] = str_replace(',', '', $data['price']);
+        } catch (\Exception $e) {
+            return [];
         }
+        $data['saleoff'] = 0;
+//        if (isset($data['sale_price']) && isset($data['price'])) {
+//            if ($data['sale_price'] != 0 && $data['price'] != 0) {
+//                $data['saleoff'] = round(1 - ($data['sale_price'] / $data['price']), 2);
+//            }
+//        }
 
         try {
-            $data['name'] = explode(' - ', trim($content->find('.r_item h1')->text()))[1];
-            $data['category'] = explode(' - ', trim($content->find('.r_item h1')->text()))[0];
-            $data['message'] = trim($content->find('.r_item .desc')->text());
+            $data['name'] = $content->find('.product-detail h2.title-product')->text();
+            $data['brand'] = $content->find('.product-detail a.title-brand')->text();
+//            $data['category'] = explode(' - ', trim($content->find('.r_item h1')->text()))[0];
+            $data['message'] = trim($content->find('.short-description .content')->text());
             $data['slug'] = str_slug($data['name']);
+
             $data['quantity'] = 0;
             $data['admin_id'] = Auth::guard('admin')->id() ?? 1;
-            $data['show'] = 1;
+            $data['show'] = 0;
             if (!isset($data['price'])) {
                 $data['price'] = 0;
             }
-            $data['img_link'] = $content->find('.l_item .t_item img')->attribute('data-original');
+            $data['img_link'] = $content->find('.slide-product .item img')->attribute('src');
             $imgInfo = pathinfo($data['img_link']);
             $data['image'] = time() . '_' . $imgInfo['filename'] . '.' . $imgInfo['extension'];
         } catch (\Exception $e) {

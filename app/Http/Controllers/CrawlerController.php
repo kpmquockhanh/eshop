@@ -18,7 +18,7 @@ class CrawlerController extends Controller
     {
         $this->middleware('auth:admin');
         $this->crawler = new Crawler();
-        $this->crawlerV2 = new CrawlerV2('abc');
+//        $this->crawlerV2 = new CrawlerV2('abc');
     }
 
     public function index()

@@ -11,12 +11,12 @@
                     <div class="body bordered">
 
                         <div class="category-filter">
-                            <h2>Brands</h2>
+                            <h2>Categories</h2>
                             <hr>
                             <ul>
                                 @foreach ($categories as $category)
                                     <li>
-                                        <input class="le-checkbox" type="checkbox"/>
+                                        <input class="le-checkbox switch-category" type="checkbox" {{ request('cate') == $category->id ? 'checked' : '' }} data-id="{{ $category->id }}"/>
                                         <label>{{ $category->cate_name }}</label>
                                         <span class="pull-right">({{ $category->products->count() }})</span>
                                     </li>
@@ -24,21 +24,21 @@
                             </ul>
                         </div><!-- /.category-filter -->
 
-                        <div class="price-filter">
-                            <h2>Price</h2>
-                            <hr>
-                            <div class="price-range-holder">
+                        {{--<div class="price-filter">--}}
+                            {{--<h2>Price</h2>--}}
+                            {{--<hr>--}}
+                            {{--<div class="price-range-holder">--}}
 
-                                <input type="text" class="price-slider" value="" >
+                                {{--<input type="text" class="price-slider" value="" >--}}
 
-                                <span class="min-max">
-                                    Price: $89 - $2899
-                                </span>
-                                <span class="filter-button">
-                                    <a href="#">Filter</a>
-                                </span>
-                            </div>
-                        </div><!-- /.price-filter -->
+                                {{--<span class="min-max">--}}
+                                    {{--Price: $89 - $2899--}}
+                                {{--</span>--}}
+                                {{--<span class="filter-button">--}}
+                                    {{--<a href="#">Filter</a>--}}
+                                {{--</span>--}}
+                            {{--</div>--}}
+                        {{--</div><!-- /.price-filter -->--}}
 
                     </div><!-- /.body -->
                 </div><!-- /.widget -->
@@ -51,7 +51,7 @@
             <div class="col-xs-12 col-sm-9 no-margin wide sidebar">
                 <section id="gaming">
                     <div class="grid-list-products">
-                        <h2 class="section-title">Gaming</h2>
+                        <h2 class="section-title">{{ request('cate') ? 'By category': 'All categories' }}</h2>
 
                         <div class="control-bar">
                             <div id="popularity-sort" class="le-select" >
@@ -190,4 +190,12 @@
             <!-- ========================================= CONTENT : END ========================================= -->
         </div><!-- /.container -->
     </section><!-- /#category-grid -->
+@stop
+@section('script')
+    <script>
+        $('.switch-category').change((e) => {
+            const id = $(e.target).attr('data-id');
+            window.location = '{{ route('shop') }}?cate='+id;
+        })
+    </script>
 @stop

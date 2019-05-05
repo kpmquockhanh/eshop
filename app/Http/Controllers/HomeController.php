@@ -41,14 +41,14 @@ class HomeController extends Controller
 
     public function viewShop(Request $request)
     {
-        $products = Product::query()->where('show',true);
+        $products = Product::query()->where('show',1);
 
         if ($cate_id = $request->cate)
         {
-            $Cate = CategoryProduct::query()->where('category_id', $cate_id)->get(['product_id']);
+            $cate = CategoryProduct::query()->where('category_id', $cate_id)->get(['product_id']);
 
             $idsProduct = [];
-            foreach($Cate->toArray() as $i) {
+            foreach($cate->toArray() as $i) {
                 $idsProduct[] = $i['product_id'];
             }
 
@@ -72,7 +72,9 @@ class HomeController extends Controller
             'toItem' => $toItem,
             'fromItem' => $toItem?$toItem-$products->count()+1:0,
             'queries' => $request->query(),
-            'categories' => Category::with('products')->get(),
+            'categories' => Category::with(['products' => function ($query) {
+                return $query->where('show', 1);
+            }])->get(),
             'hotProducts' => Product::query()->orderByDesc('views')->take(3)->get(),
         ];
         if (Auth::check())
