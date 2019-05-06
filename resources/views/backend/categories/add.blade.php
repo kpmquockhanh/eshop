@@ -43,6 +43,39 @@
                                 </div>
                             </div>
                             <div class="row">
+                                @if ($errors->has('order'))
+                                    <div class="text-danger col-md-12 offset-md-2">
+                                        <strong>{{ $errors->first('order') }}</strong>
+                                    </div>
+                                @endif
+                                <label class="col-sm-2 col-form-label">Sắp xếp</label>
+                                <div class="col-sm-10">
+                                    <div class="form-group">
+                                        <input type="number" name="order" class="form-control"
+                                               value="">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if ($errors->has('show_home'))
+                                    <div class="text-danger col-md-12 offset-md-2">
+                                        <strong>{{ $errors->first('show_home') }}</strong>
+                                    </div>
+                                @endif
+                                <div class="col-sm-10 offset-sm-2">
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="checkbox" value="1" name="show_home">
+                                                <span class="form-check-sign"></span>
+                                                Hiển thị
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <label class="col-sm-2 col-form-label"></label>
                                 <div class="col-sm-10">
                                     <div class="form-group">

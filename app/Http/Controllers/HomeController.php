@@ -32,7 +32,9 @@ class HomeController extends Controller
     public function index()
     {
         $viewData = [
-            'products' => Product::query()->paginate(10),
+            'products' => Product::query()
+                ->where('show', 1)
+                ->paginate(10),
             'carts' => Cart::getCart()
         ];
 
@@ -62,7 +64,7 @@ class HomeController extends Controller
             $products->where('name','like', '%'.$request->s.'%')
                     ->orWhere('message', 'like', '%'.$request->s.'%');
         }
-        $products = $products->orderByDesc('id')->paginate(1);
+        $products = $products->orderByDesc('id')->paginate(20);
 
         $toItem = $products->perPage() == $products->count() ?
             $products->currentPage() * $products->perPage():

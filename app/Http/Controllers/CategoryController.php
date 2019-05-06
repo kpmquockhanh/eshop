@@ -10,7 +10,9 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
 //        $categories = Admin::where('id', '!=', Auth::guard('admin')->id());
-        $categories = Category::query();
+        $categories = Category::query()
+            ->orderBy('show_home', 'desc')
+            ->orderBy('order', 'desc');
         if ($search = $request->search)
         {
             $categories->orWhere('name','like', '%'.$search.'%')
@@ -42,10 +44,12 @@ class CategoryController extends Controller
     {
         $data = $request->only([
             'cate_name',
-            'cate_code'
+            'cate_code',
+            'show_home',
+            'order',
         ]);
 
-        Category::create($data);
+        Category::query()->create($data);
 
         return redirect(route('admin.categories.list'));
     }
@@ -54,7 +58,7 @@ class CategoryController extends Controller
     {
         if ($id)
         {
-            $category = Category::findOrFail($id);
+            $category = Category::query()->findOrFail($id);
             if ($category)
                 return view('backend.categories.edit', compact('category'));
             return redirect()->back();
@@ -66,14 +70,18 @@ class CategoryController extends Controller
     {
         if ($id = $request->id)
         {
-            $category = Category::find($id);
+            $category = Category::query()->findOrFail($id);
             if ($category)
             {
                 $data = $request->only([
                     'cate_name',
-                    'cate_code'
+                    'cate_code',
+                    'show_home',
+                    'order',
                 ]);
-
+                if (!$request->show_home) {
+                    $data['show_home'] = 0;
+                }
                 $category->update($data);
 
                 return redirect(route('admin.categories.list'));

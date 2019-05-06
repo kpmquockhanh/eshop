@@ -237,7 +237,7 @@ class Crawler
 
             $data['quantity'] = 0;
             $data['admin_id'] = Auth::guard('admin')->id() ?? 1;
-            $data['show'] = 0;
+            $data['show'] = 1;
             if (!isset($data['price'])) {
                 $data['price'] = 0;
             }

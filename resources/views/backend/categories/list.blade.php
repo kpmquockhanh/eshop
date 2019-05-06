@@ -38,6 +38,12 @@
                                         Tên
                                     </th>
                                     <th>
+                                        Hiển thị
+                                    </th>
+                                    <th>
+                                        Sắp xếp
+                                    </th>
+                                    <th>
                                         Mã
                                     </th>
                                     <th>
@@ -64,16 +70,22 @@
                                         <td class="text-center">
                                             {{$category->id}}
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             {{$category->cate_name}}
                                         </td>
-                                        <td>
+                                        <td class="text-center {{ $category->show_home ? 'text-success' : 'text-danger' }}">
+                                            {{ $category->showText }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ $category->order }}
+                                        </td>
+                                        <td class="text-center">
                                             {{$category->cate_code}}
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             {{$category->created_at->diffForHumans()}}
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             {{$category->updated_at->diffForHumans()}}
                                         </td>
                                         <td class="text-center">

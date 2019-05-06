@@ -1,16 +1,16 @@
 <!-- ============================================================= FOOTER ============================================================= -->
 <footer id="footer" class="color-bg">
 
-    <div class="sub-form-row">
-        <div class="container">
-            <div class="col-xs-12 col-sm-8 col-sm-offset-2 no-padding">
-                <form role="form">
-                    <input placeholder="Subscribe to our newsletter">
-                    <button class="le-button">Subscribe</button>
-                </form>
-            </div>
-        </div><!-- /.container -->
-    </div><!-- /.sub-form-row -->
+    {{--<div class="sub-form-row">--}}
+        {{--<div class="container">--}}
+            {{--<div class="col-xs-12 col-sm-8 col-sm-offset-2 no-padding">--}}
+                {{--<form role="form">--}}
+                    {{--<input placeholder="Subscribe to our newsletter">--}}
+                    {{--<button class="le-button">Subscribe</button>--}}
+                {{--</form>--}}
+            {{--</div>--}}
+        {{--</div><!-- /.container -->--}}
+    {{--</div><!-- /.sub-form-row -->--}}
 
     <div class="link-list-row">
         <div class="container no-padding">

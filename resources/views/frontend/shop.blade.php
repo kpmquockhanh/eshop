@@ -1,5 +1,4 @@
 @extends('frontend.layouts.default')
-
 @section('content')
     <section id="category-grid">
         <div class="container">
@@ -54,13 +53,13 @@
                         <h2 class="section-title">{{ request('cate') ? 'By category': 'All categories' }}</h2>
 
                         <div class="control-bar">
-                            <div id="popularity-sort" class="le-select" >
-                                <select data-placeholder="sort by popularity">
-                                    <option value="1">1-100 players</option>
-                                    <option value="2">101-200 players</option>
-                                    <option value="3">200+ players</option>
-                                </select>
-                            </div>
+                            {{--<div id="popularity-sort" class="le-select" >--}}
+                                {{--<select data-placeholder="sort by popularity">--}}
+                                    {{--<option value="1">1-100 players</option>--}}
+                                    {{--<option value="2">101-200 players</option>--}}
+                                    {{--<option value="3">200+ players</option>--}}
+                                {{--</select>--}}
+                            {{--</div>--}}
 
                             <div id="item-count" class="le-select">
                                 <select>
@@ -93,7 +92,7 @@
                                                     <div class="body">
                                                         <div class="label-discount green">-50% sale</div>
                                                         <div class="title">
-                                                            <a href="single-product.html">{{ $product->name }}</a>
+                                                            <a href="{{ route('product.index', ['id' => $product->id]) }}">{{ $product->name }}</a>
                                                         </div>
                                                         {{--<div class="brand">sony</div>--}}
                                                     </div>
@@ -128,31 +127,31 @@
                                             <div class="row">
                                                 <div class="no-margin col-xs-12 col-sm-4 image-holder">
                                                     <div class="image">
-                                                        <img alt="" src="assets/images/blank.gif" data-echo="assets/images/products/product-01.jpg" />
+                                                        <img alt="" src="{{ asset('assets/images/blank.gif') }}" data-echo="{{ 'images/'.$product->image }}" />
                                                     </div>
                                                 </div><!-- /.image-holder -->
                                                 <div class="no-margin col-xs-12 col-sm-5 body-holder">
                                                     <div class="body">
                                                         <div class="label-discount green">-50% sale</div>
                                                         <div class="title">
-                                                            <a href="single-product.html">VAIO Fit Laptop - Windows 8 SVF14322CXW</a>
+                                                            <a href="{{ route('product.index', ['id' => $product->id]) }}">{{ $product->name }}</a>
                                                         </div>
                                                         <div class="brand">sony</div>
                                                         <div class="excerpt">
-                                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut lobortis euismod erat sit amet porta. Etiam venenatis ac diam ac tristique. Morbi accumsan consectetur odio ut tincidunt.</p>
+                                                            <p>{{ $product->message }}</p>
                                                         </div>
-                                                        <div class="addto-compare">
-                                                            <a class="btn-add-to-compare" href="#">add to compare list</a>
-                                                        </div>
+                                                        {{--<div class="addto-compare">--}}
+                                                            {{--<a class="btn-add-to-compare" href="#">add to compare list</a>--}}
+                                                        {{--</div>--}}
                                                     </div>
                                                 </div><!-- /.body-holder -->
                                                 <div class="no-margin col-xs-12 col-sm-3 price-area">
                                                     <div class="right-clmn">
-                                                        <div class="price-current">$1199.00</div>
-                                                        <div class="price-prev">$1399.00</div>
+                                                        <div class="price-current">{{ $product->price_formated }}</div>
+                                                        {{--<div class="price-prev">$1399.00</div>--}}
                                                         <div class="availability"><label>availability:</label><span class="available">  in stock</span></div>
-                                                        <a class="le-button" href="#">add to cart</a>
-                                                        <a class="btn-add-to-wishlist" href="#">add to wishlist</a>
+                                                        <a class="le-button" href="{{ route('cart.add', ['id' => $product->id]) }}">add to cart</a>
+                                                        {{--<a class="btn-add-to-wishlist" href="#">add to wishlist</a>--}}
                                                     </div>
                                                 </div><!-- /.price-area -->
                                             </div><!-- /.row -->
@@ -161,24 +160,7 @@
 
                                 </div><!-- /.products-list -->
 
-                                <div class="pagination-holder">
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-6 text-left">
-                                            <ul class="pagination">
-                                                <li class="current"><a  href="#">1</a></li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#">4</a></li>
-                                                <li><a href="#">next</a></li>
-                                            </ul><!-- /.pagination -->
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6">
-                                            <div class="result-counter">
-                                                Showing <span>1-9</span> of <span>11</span> results
-                                            </div><!-- /.result-counter -->
-                                        </div>
-                                    </div><!-- /.row -->
-                                </div><!-- /.pagination-holder -->
+                                {{ $products->links('frontend.layouts.pagination') }}
 
                             </div><!-- /.products-grid #list-view -->
 
