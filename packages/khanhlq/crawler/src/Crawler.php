@@ -92,6 +92,9 @@ class Crawler
         $page = $this->getPage($baseUrl);
 
         $next = null;
+
+        $numberOfItem = 20;
+        $count = 0;
         do {
             if ($next) {
                 $page = $this->getPage($next->attribute('href'));
@@ -106,6 +109,8 @@ class Crawler
                 if (!$this->createProduct($data)) {
                     continue;
                 }
+                $count++;
+                if ($count > 20) break;
             }
             $next = $page->find('.page.pagination .right .text a');
         } while ($next);
@@ -123,6 +128,8 @@ class Crawler
                 $this->downloadImage($data['img_link'], $data['image']);
 //                dd($data);
                 $product = Product::query()->create($data);
+            } else {
+                return false;
             }
 
             if (!$cate = Category::query()->where('cate_code', str_slug($data['category']))->first()) {
@@ -208,7 +215,6 @@ class Crawler
     {
         $fullPath = $this->getFullPath($link);
         $content = $this->getPage($fullPath);
-
         if (!$content) {
             return [];
         }
@@ -222,11 +228,6 @@ class Crawler
             return [];
         }
         $data['saleoff'] = 0;
-//        if (isset($data['sale_price']) && isset($data['price'])) {
-//            if ($data['sale_price'] != 0 && $data['price'] != 0) {
-//                $data['saleoff'] = round(1 - ($data['sale_price'] / $data['price']), 2);
-//            }
-//        }
 
         try {
             $data['name'] = $content->find('.product-detail h2.title-product')->text();
@@ -243,6 +244,12 @@ class Crawler
             }
             $data['img_link'] = $content->find('.slide-product .item img')->attribute('src');
             $imgInfo = pathinfo($data['img_link']);
+
+            //Process exension remove params
+            preg_match('/(.*?)[\&|\?].*?$/', $imgInfo['extension'],$matches);
+            if (count($matches)) {
+                $imgInfo['extension'] = $matches[1];
+            }
             $data['image'] = time() . '_' . $imgInfo['filename'] . '.' . $imgInfo['extension'];
         } catch (\Exception $e) {
             return [];

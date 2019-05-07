@@ -35,7 +35,8 @@ class HomeController extends Controller
             'products' => Product::query()
                 ->where('show', 1)
                 ->paginate(10),
-            'carts' => Cart::getCart()
+            'carts' => Cart::getCart(),
+            'categories' => Category::with('products')->where('show_home', 1)->orderByDesc('order')->get()
         ];
 
         return view('frontend.welcome')->with($viewData);

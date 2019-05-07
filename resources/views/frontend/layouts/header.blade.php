@@ -87,7 +87,7 @@
                 </div><!-- /.navbar-header -->
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        @foreach (\App\Category::query()->where('show_home', 1)->orderByDesc('order')->limit(6)->get() as $category)
+                        @foreach (\App\Category::query()->where('show_home', 1)->orderByDesc('order')->get() as $category)
                             <li class="">
                                 <a href="{{ route('shop', ['cate' => $category->id]) }}">{{ $category->cate_name }}</a>
                             </li>
